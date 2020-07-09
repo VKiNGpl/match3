@@ -17,6 +17,7 @@ WINDOW_HEIGHT = 720
 function love.load()
     currentSecond = 0
     secondTimer = 0
+    love.window.setTitle('Timer')
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
