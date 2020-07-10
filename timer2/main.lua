@@ -1,3 +1,5 @@
+if pcall(require, "lldebugger") then require("lldebugger").start() end
+if pcall(require, "mobdebug") then require("mobdebug").start() end
 --[[
     GD50
     timer2
@@ -17,6 +19,7 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
 function love.load()
+    love.window.setTitle('Timer')
     -- all of the intervals for our labels
     intervals = {1, 2, 4, 3, 2, 8}
 
@@ -58,8 +61,8 @@ end
 function love.draw()
     push:start()
     
-    -- "5" could be # of some table here for a real-world use case
-    for i = 1, 6 do
+    -- "6" could be # of some table here for a real-world use case
+    for i = 1, #counters do
         -- reference the counters and intervals table via i here, which is being
         -- updated with the Timer library over time thanks to Timer.update
         love.graphics.printf('Timer: ' .. tostring(counters[i]) .. ' seconds (every ' ..

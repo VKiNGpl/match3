@@ -8,6 +8,8 @@
     different rates to show a slightly better example than before but uses
     Timer.tween to do it; it also tweens their opacity.
 ]]
+if pcall(require, "lldebugger") then require("lldebugger").start() end
+if pcall(require, "mobdebug") then require("mobdebug").start() end
 
 push = require 'push'
 Timer = require 'knife.timer'
@@ -54,7 +56,7 @@ function love.load()
     for k, bird in pairs(birds) do
         Timer.tween(bird.rate, {
             -- tween bird's X to endX over bird.rate seconds
-            [bird] = { x = endX, opacity = 255 }
+            [bird] = { x = endX, opacity = 1 }
         })
     end
 
@@ -83,10 +85,11 @@ end
 
 function love.draw()
     push:start()
+    love.graphics.clear(0.0, 0.0, 0.5)
 
     -- iterate over bird table for drawing
     for k, bird in pairs(birds) do
-        love.graphics.setColor(255, 255, 255, bird.opacity)
+        love.graphics.setColor(1.0, 1.0, 1.0, bird.opacity)
         love.graphics.draw(flappySprite, bird.x, bird.y)
     end
 

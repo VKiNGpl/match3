@@ -15,6 +15,7 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
 function love.load()
+    love.window.setTitle('Timer')
     currentSecond = 0
     secondTimer = 0
     currentSecond2 = 0
