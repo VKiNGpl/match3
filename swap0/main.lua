@@ -50,7 +50,7 @@ function love.draw()
     push:start()
     
     -- draw the board with an offset so it's centered on the screen
-    drawBoard(128, 16)
+    drawBoard(64, 0)
     
     push:finish()
 end
@@ -61,14 +61,14 @@ end
 ]]
 function generateBoard()
     local tiles = {}
-
+    local counter = 1
     -- each column of tiles
-    for y = 1, 8 do
+    for y = 1, 9 do -- to 8 in original distro
         
         -- row of tiles
         table.insert(tiles, {})
 
-        for x = 1, 8 do
+        for x = 1, 12 do -- to 8 in original distro
             
             -- tiles[y] will be the blank table we just inserted
             table.insert(tiles[y], {
@@ -78,8 +78,15 @@ function generateBoard()
                 y = (y - 1) * 32,
                 
                 -- assign a random ID to tile to make it a random tile
-                tile = math.random(#tileQuads)
+                tile = counter,         -- (math.rand(#tileQuads)) in original distro
+                coordinate = y-1 .. x-1,
+                counter = counter + 1
             })
+            counter = counter + 1
+            print('x ' .. tiles[y][x].x)
+            print('y ' .. tiles[y][x].y)
+            print('tile ' .. tiles[y][x].tile)
+            print(tiles[y][x].coordinate)
         end
     end
 
@@ -88,10 +95,10 @@ end
 
 function drawBoard(offsetX, offsetY)
     -- draw each column
-    for y = 1, 8 do
+    for y = 1, 9 do
 
         -- draw each row
-        for x = 1, 8 do
+        for x = 1, 12 do
             local tile = board[y][x]
 
             -- draw spritesheet using the tile's quad, adding offsets

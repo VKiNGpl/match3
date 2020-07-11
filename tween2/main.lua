@@ -44,7 +44,7 @@ function love.load()
             -- floating-point
             rate = math.random() + math.random(TIMER_MAX - 1),
 
-            -- start with an opacity of 0 and fade to 255 over duration as well
+            -- start with an opacity of 0 and fade to 1.0 over duration as well
             opacity = 0
         })
     end

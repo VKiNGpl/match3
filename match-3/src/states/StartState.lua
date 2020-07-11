@@ -83,7 +83,7 @@ function StartState:update(dt)
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
             if self.currentMenuItem == 1 then
                 
-                -- tween, using Timer, the transition rect's alpha to 255, then
+                -- tween, using Timer, the transition rect's alpha to 1.0, then
                 -- transition to the BeginGame state after the animation is over
                 Timer.tween(1, {
                     [self] = {transitionAlpha = 1}
@@ -115,7 +115,7 @@ function StartState:render()
         for x = 1, 8 do
             
             -- render shadow first
-            love.graphics.setColor(0.0, 0,.0 0.0, 1.0)
+            love.graphics.setColor(0.0, 0.0, 0.0, 1.0)
             love.graphics.draw(gTextures['main'], positions[(y - 1) * x + x], 
                 (x - 1) * 32 + 128 + 3, (y - 1) * 32 + 16 + 3)
 

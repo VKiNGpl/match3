@@ -21,7 +21,7 @@ PlayState = Class{__includes = BaseState}
 function PlayState:init()
     
     -- start our transition alpha at full, so we fade in
-    self.transitionAlpha = 255
+    self.transitionAlpha = 1.0
 
     -- position in the grid which we're highlighting
     self.boardHighlightX = 0
@@ -229,7 +229,7 @@ function PlayState:render()
         -- multiply so drawing white rect makes it brighter
         love.graphics.setBlendMode('add')
 
-        love.graphics.setColor(255, 255, 255, 96)
+        love.graphics.setColor(1.0, 1.0, 1.0, 0.376)
         love.graphics.rectangle('fill', (self.highlightedTile.gridX - 1) * 32 + (VIRTUAL_WIDTH - 272),
             (self.highlightedTile.gridY - 1) * 32 + 16, 32, 32, 4)
 
@@ -239,9 +239,9 @@ function PlayState:render()
 
     -- render highlight rect color based on timer
     if self.rectHighlighted then
-        love.graphics.setColor(217, 87, 99, 255)
+        love.graphics.setColor(0.851, 0.341, 0.388, 1.0)
     else
-        love.graphics.setColor(172, 50, 50, 255)
+        love.graphics.setColor(0.675, 0.196, 0.196, 1.0)
     end
 
     -- draw actual cursor rect
@@ -250,10 +250,10 @@ function PlayState:render()
         self.boardHighlightY * 32 + 16, 32, 32, 4)
 
     -- GUI text
-    love.graphics.setColor(56, 56, 56, 234)
+    love.graphics.setColor(0.22, 0.22, 0.22, 0.918)
     love.graphics.rectangle('fill', 16, 16, 186, 116, 4)
 
-    love.graphics.setColor(99, 155, 255, 255)
+    love.graphics.setColor(0.388, 0.608, 1.0, 1.0)
     love.graphics.setFont(gFonts['medium'])
     love.graphics.printf('Level: ' .. tostring(self.level), 20, 24, 182, 'center')
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
