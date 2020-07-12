@@ -61,7 +61,7 @@ function PlayState:enter(params)
     self.level = params.level
 
     -- spawn a board and place it toward the right
-    self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16)
+    self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
 
     -- grab score from params if it was passed
     self.score = params.score or 0
@@ -90,7 +90,7 @@ function PlayState:update(dt)
 
     -- go to next level if we surpass score goal
     if self.score >= self.scoreGoal then
-        
+        startLevel = startLevel + 1
         -- clear timers from prior PlayStates
         -- always clear before you change state, else next state's timers
         -- will also clear!

@@ -13,14 +13,17 @@
 ]]
 
 BeginGameState = Class{__includes = BaseState}
+local currentLevel
 
-function BeginGameState:init()
-    
+function BeginGameState:init(level)
+    print(startLevel)
+    currentLevel = level
+
     -- start our transition alpha at full, so we fade in
     self.transitionAlpha = 1.0
 
     -- spawn a board and place it toward the right
-    self.board = Board(VIRTUAL_WIDTH - 272, 16)
+    self.board = Board(VIRTUAL_WIDTH - 272, 16, currentLevel) -- pass in initial game level here
 
     -- start our level # label off-screen
     self.levelLabelY = -64
@@ -29,7 +32,7 @@ end
 function BeginGameState:enter(def)
     
     -- grab level # from the def we're passed
-    self.level = def.level
+    currentLevel = def.level
 
     --
     -- animate our white screen fade-in, then animate a drop-down with
@@ -60,7 +63,7 @@ function BeginGameState:enter(def)
                 -- once that's complete, we're ready to play!
                 :finish(function()
                     gStateMachine:change('play', {
-                        level = self.level,
+                        level = currentLevel,
                         board = self.board
                     })
                 end)
@@ -83,7 +86,7 @@ function BeginGameState:render()
     love.graphics.rectangle('fill', 0, self.levelLabelY - 8, VIRTUAL_WIDTH, 48)
     love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
     love.graphics.setFont(gFonts['large'])
-    love.graphics.printf('Level ' .. tostring(self.level),
+    love.graphics.printf('Level ' .. tostring(currentLevel),
         0, self.levelLabelY, VIRTUAL_WIDTH, 'center')
 
     -- our transition foreground rectangle

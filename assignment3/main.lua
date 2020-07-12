@@ -44,6 +44,8 @@ VIRTUAL_HEIGHT = 288
 -- speed at which our background texture will scroll
 BACKGROUND_SCROLL_SPEED = 80
 
+startLevel = 1
+
 function love.load()
     
     -- window bar title
@@ -67,7 +69,7 @@ function love.load()
     -- initialize state machine with all state-returning functions
     gStateMachine = StateMachine {
         ['start'] = function() return StartState() end,
-        ['begin-game'] = function() return BeginGameState() end,
+        ['begin-game'] = function() return BeginGameState(startLevel) end,
         ['play'] = function() return PlayState() end,
         ['game-over'] = function() return GameOverState() end
     }
@@ -78,7 +80,6 @@ function love.load()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
-
 end
 
 function love.resize(w, h)
