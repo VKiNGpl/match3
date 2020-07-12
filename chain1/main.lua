@@ -27,6 +27,9 @@ function love.load()
 
     -- destinations are now just placed in Timer.tween, now with a :finish
     -- function after every tween that gets called once that tween is finished
+    dispatchBird()
+    Timer.every(8, function () dispatchBird() end)
+    --[[
     Timer.tween(MOVEMENT_TIME, {
         [flappy] = {x = VIRTUAL_WIDTH - flappySprite:getWidth(), y = 0}
     })
@@ -45,6 +48,7 @@ function love.load()
             end)
         end)
     end)
+    ]]
 
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -73,4 +77,25 @@ function love.draw()
     push:start()
     love.graphics.draw(flappySprite, flappy.x, flappy.y)
     push:finish()
+end
+
+function dispatchBird()
+    Timer.tween(MOVEMENT_TIME, {
+        [flappy] = {x = VIRTUAL_WIDTH - flappySprite:getWidth(), y = 0}
+    })
+    :finish(function()
+        Timer.tween(MOVEMENT_TIME, {
+            [flappy] = {x = VIRTUAL_WIDTH - flappySprite:getWidth(), y = VIRTUAL_HEIGHT - flappySprite:getHeight()}
+        })
+        :finish(function()
+            Timer.tween(MOVEMENT_TIME, {
+                [flappy] = {x = 0, y = VIRTUAL_HEIGHT - flappySprite:getHeight()}
+            })
+            :finish(function()
+                Timer.tween(MOVEMENT_TIME, {
+                    [flappy] = {x = 0, y = 0}
+                })
+            end)
+        end)
+    end)
 end

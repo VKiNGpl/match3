@@ -78,6 +78,7 @@ function love.load()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
+
 end
 
 function love.resize(w, h)

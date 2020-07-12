@@ -17,7 +17,9 @@ local positions = {}
 StartState = Class{__includes = BaseState}
 
 function StartState:init()
-    
+    -- current level
+    self.level = 1
+
     -- currently selected menu item
     self.currentMenuItem = 1
 
@@ -89,7 +91,7 @@ function StartState:update(dt)
                     [self] = {transitionAlpha = 1.0}
                 }):finish(function()
                     gStateMachine:change('begin-game', {
-                        level = 1
+                        level = self.level
                     })
 
                     -- remove color timer from Timer
