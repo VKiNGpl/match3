@@ -37,7 +37,7 @@ function PlayState:init()
     self.highlightedTile = nil
 
     self.score = 0
-    self.timer = 60
+    self.timer = 600
 
     -- set our Timer class to turn cursor highlight on and off
     Timer.every(0.5, function()
@@ -197,7 +197,6 @@ function PlayState:calculateMatches()
         for k, match in pairs(matches) do
             self.score = self.score + #match * 50
             self.timer = self.timer + #match
-            --print(#match)
         end
 
         -- remove any tiles that matched from the board, making empty spaces

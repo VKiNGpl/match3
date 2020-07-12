@@ -59,20 +59,29 @@ function Board:calculateMatches()
     -- horizontal matches first
     for y = 1, 8 do
         local colorToMatch = self.tiles[y][1].color
+        local varietyToMatch = self.tiles[y][1].variety
+        local varietyMatched = true
 
         matchNum = 1
         
         -- every horizontal tile
         for x = 2, 8 do
-            
+            if matchNum > 1 and varietyMatched == false then
+                varietyToMatch = self.tiles[y][x].variety
+            end
             -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
+                if varietyMatched and self.tiles[y][x].variety == varietyToMatch then
+                    varietyMatched = true
+                else
+                    varietyMatched = false
+                end
             else
                 
                 -- set this as the new color we want to watch for
                 colorToMatch = self.tiles[y][x].color
-
+                
                 -- if we have a match of 3 or more up to now, add it to our matches table
                 if matchNum >= 3 then
                     local match = {}
@@ -86,9 +95,17 @@ function Board:calculateMatches()
 
                     -- add this match to our total matches table
                     table.insert(matches, match)
+                    print(varietyMatched)
+                    print(varietyToMatch)
+                    if varietyMatched then
+                        for i = 1, varietyToMatch - 1 do
+                            table.insert(matches, match)
+                        end
+                    end
                 end
 
                 matchNum = 1
+                varietyMatched = true
 
                 -- don't need to check last two if they won't be in a match
                 if x >= 7 then
@@ -107,19 +124,36 @@ function Board:calculateMatches()
             end
 
             table.insert(matches, match)
+            print(varietyMatched)
+            print(varietyToMatch)
+            if varietyMatched then
+                for i = 1, varietyToMatch - 1 do
+                    table.insert(matches, match)
+                end
+            end
         end
     end
 
     -- vertical matches
     for x = 1, 8 do
         local colorToMatch = self.tiles[1][x].color
+        local varietyToMatch = self.tiles[1][x].variety
+        local varietyMatched = true
 
         matchNum = 1
 
         -- every vertical tile
         for y = 2, 8 do
+            if matchNum > 1 and varietyMatched == false then
+                varietyToMatch = self.tiles[y][x].variety
+            end
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
+                if varietyMatched and self.tiles[y][x].variety == varietyToMatch then
+                    varietyMatched = true
+                else
+                    varietyMatched = false
+                end
             else
                 colorToMatch = self.tiles[y][x].color
 
@@ -131,9 +165,17 @@ function Board:calculateMatches()
                     end
 
                     table.insert(matches, match)
+                    print(varietyMatched)
+                    print(varietyToMatch)
+                    if varietyMatched then
+                        for i = 1, varietyToMatch - 1 do
+                            table.insert(matches, match)
+                        end
+                    end
                 end
 
                 matchNum = 1
+                varietyMatched = true
 
                 -- don't need to check last two if they won't be in a match
                 if y >= 7 then
@@ -152,6 +194,13 @@ function Board:calculateMatches()
             end
 
             table.insert(matches, match)
+            print(varietyMatched)
+            print(varietyToMatch)
+            if varietyMatched then
+                for i = 1, varietyToMatch - 1 do
+                    table.insert(matches, match)
+                end
+            end
         end
     end
 

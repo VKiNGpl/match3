@@ -16,7 +16,6 @@ BeginGameState = Class{__includes = BaseState}
 local currentLevel
 
 function BeginGameState:init(level)
-    print(startLevel)
     currentLevel = level
 
     -- start our transition alpha at full, so we fade in
