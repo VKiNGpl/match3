@@ -100,7 +100,7 @@ function PlayState:update(dt)
 
         -- change to begin game state with new level (incremented)
         gStateMachine:change('begin-game', {
-            level = self.level + 1,
+            level = startLevel,
             score = self.score
         })
     end

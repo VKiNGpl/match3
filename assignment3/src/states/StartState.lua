@@ -18,7 +18,7 @@ StartState = Class{__includes = BaseState}
 
 function StartState:init()
     -- current level
-    self.level = 1
+    self.level = startLevel
 
     -- currently selected menu item
     self.currentMenuItem = 1

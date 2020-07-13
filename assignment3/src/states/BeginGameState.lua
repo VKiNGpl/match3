@@ -13,7 +13,8 @@
 ]]
 
 BeginGameState = Class{__includes = BaseState}
-local currentLevel
+
+local currentLevel = level
 
 function BeginGameState:init(level)
     currentLevel = level
@@ -31,7 +32,7 @@ end
 function BeginGameState:enter(def)
     
     -- grab level # from the def we're passed
-    currentLevel = def.level
+    self.level = def.level
 
     --
     -- animate our white screen fade-in, then animate a drop-down with

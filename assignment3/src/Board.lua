@@ -33,7 +33,7 @@ function Board:initializeTiles(level)
         for tileX = 1, 8 do
             
             -- create a new tile at X,Y with a random color and variety
-            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(10), math.random(math.min(level, 6))))
+            table.insert(self.tiles[tileY], Tile(tileX, tileY, math.random(10), math.random(math.min(self.level, 6))))
         end
     end
 
@@ -59,53 +59,52 @@ function Board:calculateMatches()
     -- horizontal matches first
     for y = 1, 8 do
         local colorToMatch = self.tiles[y][1].color
-        local varietyToMatch = self.tiles[y][1].variety
-        local varietyMatched = true
-
-        matchNum = 1
         
+        matchNum = 1
+
         -- every horizontal tile
         for x = 2, 8 do
-            if matchNum > 1 and varietyMatched == false then
-                varietyToMatch = self.tiles[y][x].variety
-            end
             -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
-                if varietyMatched and self.tiles[y][x].variety == varietyToMatch then
-                    varietyMatched = true
-                else
-                    varietyMatched = false
-                end
             else
                 
                 -- set this as the new color we want to watch for
                 colorToMatch = self.tiles[y][x].color
-                
+
                 -- if we have a match of 3 or more up to now, add it to our matches table
                 if matchNum >= 3 then
                     local match = {}
+                    local varietyToMatch = self.tiles[y][x-1].variety
+                    local isMatched = true
 
                     -- go backwards from here by matchNum
                     for x2 = x - 1, x - matchNum, -1 do
                         
                         -- add each tile to the match that's in that match
                         table.insert(match, self.tiles[y][x2])
+                        --print('inserting variety type: '  .. self.tiles[y][x2].variety .. ' at y=' .. y .. ' x=' .. x2)
+                        if isMatched and self.tiles[y][x2].variety == varietyToMatch then
+                            isMatched = true
+                        else
+                            isMatched = false
+                        end
                     end
+                    if isMatched then
+                        --print('variety: ' .. varietyToMatch .. ' matched!')
+                        for i=1, varietyToMatch - 1 do
+                            table.insert(match, self.tiles[y][x-1])
+                        end
+                    else
+                        --print('variety not a match...')
+                    end
+                    --table.foreachi(match, print)
 
                     -- add this match to our total matches table
                     table.insert(matches, match)
-                    print(varietyMatched)
-                    print(varietyToMatch)
-                    if varietyMatched then
-                        for i = 1, varietyToMatch - 1 do
-                            table.insert(matches, match)
-                        end
-                    end
                 end
 
                 matchNum = 1
-                varietyMatched = true
 
                 -- don't need to check last two if they won't be in a match
                 if x >= 7 then
@@ -117,65 +116,82 @@ function Board:calculateMatches()
         -- account for the last row ending with a match
         if matchNum >= 3 then
             local match = {}
+            local varietyToMatch = self.tiles[y][8].variety
+            local isMatched = true
             
             -- go backwards from end of last row by matchNum
             for x = 8, 8 - matchNum + 1, -1 do
                 table.insert(match, self.tiles[y][x])
-            end
-
-            table.insert(matches, match)
-            print(varietyMatched)
-            print(varietyToMatch)
-            if varietyMatched then
-                for i = 1, varietyToMatch - 1 do
-                    table.insert(matches, match)
+                --print('inserting variety type: '  .. self.tiles[y][x].variety  .. ' at y=' .. y .. ' x=' .. x)
+                if isMatched and self.tiles[y][x].variety == varietyToMatch then
+                    isMatched = true
+                else
+                    isMatched = false
                 end
             end
+            if isMatched then
+                --print('variety: ' .. varietyToMatch .. ' matched!')
+                for i=1, varietyToMatch - 1 do
+                    table.insert(match, self.tiles[y][8])
+                end
+            else
+                --print('variety not a match...')
+            end
+            --table.foreachi(match, print)
+
+            -- add this match to our total matches table
+            table.insert(matches, match)
         end
     end
 
     -- vertical matches
     for x = 1, 8 do
         local colorToMatch = self.tiles[1][x].color
-        local varietyToMatch = self.tiles[1][x].variety
-        local varietyMatched = true
 
         matchNum = 1
 
         -- every vertical tile
         for y = 2, 8 do
-            if matchNum > 1 and varietyMatched == false then
-                varietyToMatch = self.tiles[y][x].variety
-            end
+            -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
-                if varietyMatched and self.tiles[y][x].variety == varietyToMatch then
-                    varietyMatched = true
-                else
-                    varietyMatched = false
-                end
             else
+                -- set this as the new color we want to watch for
                 colorToMatch = self.tiles[y][x].color
 
+                -- if we have a match of 3 or more up to now, add it to our matches table
                 if matchNum >= 3 then
                     local match = {}
+                    local varietyToMatch = self.tiles[y-1][x].variety
+                    local isMatched = true
 
+                    -- go backwards from here by matchNum
                     for y2 = y - 1, y - matchNum, -1 do
-                        table.insert(match, self.tiles[y2][x])
-                    end
 
-                    table.insert(matches, match)
-                    print(varietyMatched)
-                    print(varietyToMatch)
-                    if varietyMatched then
-                        for i = 1, varietyToMatch - 1 do
-                            table.insert(matches, match)
+                        -- add each tile to the match that's in that match
+                        table.insert(match, self.tiles[y2][x])
+                        --print('inserting variety type: ' ..  self.tiles[y2][x].variety .. ' at x=' .. x .. ' y=' .. y2)
+                        if isMatched and self.tiles[y2][x].variety == varietyToMatch then
+                            isMatched = true
+                        else
+                            isMatched = false
                         end
                     end
+                    if isMatched then
+                        --print('variety: ' .. varietyToMatch .. ' matched!')
+                        for i=1, varietyToMatch - 1 do
+                            table.insert(match, self.tiles[y-1][x])
+                        end
+                    else
+                        --print('variety not a match...')
+                    end
+                    --table.foreachi(match, print)
+
+                    -- add this match to our total matches table
+                    table.insert(matches, match)
                 end
 
                 matchNum = 1
-                varietyMatched = true
 
                 -- don't need to check last two if they won't be in a match
                 if y >= 7 then
@@ -187,20 +203,31 @@ function Board:calculateMatches()
         -- account for the last column ending with a match
         if matchNum >= 3 then
             local match = {}
-            
+            local varietyToMatch = self.tiles[8][x].variety
+            local isMatched = true
+
             -- go backwards from end of last row by matchNum
             for y = 8, 8 - matchNum + 1, -1 do
                 table.insert(match, self.tiles[y][x])
-            end
-
-            table.insert(matches, match)
-            print(varietyMatched)
-            print(varietyToMatch)
-            if varietyMatched then
-                for i = 1, varietyToMatch - 1 do
-                    table.insert(matches, match)
+                --print('inserting variety type: '  .. self.tiles[y][x].variety  .. ' at x=' .. x .. ' y=' .. y)
+                if isMatched and self.tiles[y][x].variety == varietyToMatch then
+                    isMatched = true
+                else
+                    isMatched = false
                 end
             end
+            if isMatched then
+                --print('variety: ' .. varietyToMatch .. ' matched!')
+                for i=1, varietyToMatch - 1 do
+                    table.insert(match, self.tiles[8][x])
+                end
+            else
+                --print('variety not a match...')
+            end
+            --table.foreachi(match, print)
+
+            -- add this match to our total matches table
+            table.insert(matches, match)
         end
     end
 
@@ -290,7 +317,7 @@ function Board:getFallingTiles()
             if not tile then
 
                 -- new tile with random color and variety
-                local tile = Tile(x, y, math.random(10), math.random(self.level))
+                local tile = Tile(x, y, math.random(10), math.random(math.min(self.level, 6)))
                 tile.y = -32
                 self.tiles[y][x] = tile
 
