@@ -87,7 +87,6 @@ function Board:calculateMatches()
                         if self.tiles[y][x2].isShiny then
                             for i = 1, #self.tiles do
                                 table.insert(match, self.tiles[y][i])
-                                print('additing tile at column: '.. i ..' row: '.. x2)
                             end
                         end
                         if isMatched and self.tiles[y][x2].variety == varietyToMatch then
@@ -131,7 +130,6 @@ function Board:calculateMatches()
                 if self.tiles[y][x].isShiny then
                     for i = 1, #self.tiles do
                         table.insert(match, self.tiles[y][i])
-                        print('additing tile at column: '.. i ..' row: '.. x)
                     end
                 end
                 if isMatched and self.tiles[y][x].variety == varietyToMatch then
@@ -184,7 +182,6 @@ function Board:calculateMatches()
                         if self.tiles[y2][x].isShiny then
                             for i = 1, #self.tiles do
                                 table.insert(match, self.tiles[y2][i])
-                                print('additing tile at column: '.. i ..' row: '.. x)
                             end
                         end
                         if isMatched and self.tiles[y2][x].variety == varietyToMatch then
@@ -228,7 +225,6 @@ function Board:calculateMatches()
                 if self.tiles[y][x].isShiny then
                     for i = 1, #self.tiles do
                         table.insert(match, self.tiles[y][i])
-                        print('additing tile at column: '.. i ..' row: '.. x)
                     end
                 end
                 if isMatched and self.tiles[y][x].variety == varietyToMatch then

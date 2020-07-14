@@ -145,32 +145,55 @@ function PlayState:update(dt)
             else
                 
                 -- swap grid positions of tiles
-                local tempX = self.highlightedTile.gridX
-                local tempY = self.highlightedTile.gridY
-
-                local newTile = self.board.tiles[y][x]
-
-                self.highlightedTile.gridX = newTile.gridX
-                self.highlightedTile.gridY = newTile.gridY
-                newTile.gridX = tempX
-                newTile.gridY = tempY
-
+                local tempX = self.highlightedTile.gridX    -- 1
+                local tempY = self.highlightedTile.gridY    -- 1
+                
+                local newTile = self.board.tiles[y][x]      -- 1, 2, x000, y032
+                
+                self.highlightedTile.gridX = newTile.gridX  -- 1
+                self.highlightedTile.gridY = newTile.gridY  -- 2
+                
+                newTile.gridX = tempX                       -- 1
+                newTile.gridY = tempY                       -- 1
+                
                 -- swap tiles in the tiles table
                 self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                    self.highlightedTile
+                    self.highlightedTile                   -- 1, 2, 000, 000 / 1, 2
+    
+                self.board.tiles[newTile.gridY][newTile.gridX] = newTile    -- 1, 1, 000, 032
 
-                self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+                if self.board:calculateMatches() then
+                    -- tween coordinates between the two so they swap
+                    Timer.tween(0.1, {
+                        [self.highlightedTile] = {x = newTile.x, y = newTile.y},
+                        [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
+                    })
 
-                -- tween coordinates between the two so they swap
-                Timer.tween(0.1, {
-                    [self.highlightedTile] = {x = newTile.x, y = newTile.y},
-                    [newTile] = {x = self.highlightedTile.x, y = self.highlightedTile.y}
-                })
-                
-                -- once the swap is finished, we can tween falling blocks as needed
-                :finish(function()
-                    self:calculateMatches()
-                end)
+                    -- once the swap is finished, we can tween falling blocks as needed
+                    :finish(function()
+                        self:calculateMatches()
+                    end)
+                else                
+                    tempX = self.highlightedTile.gridX    -- 1
+                    tempY = self.highlightedTile.gridY    -- 2
+                    print('tempX: '.. tempX..' tempY: '..tempY)
+                    
+                    self.highlightedTile.gridX = newTile.gridX  -- 1
+                    self.highlightedTile.gridY = newTile.gridY  -- 1
+                    print('highGridX '.. self.highlightedTile.gridX..' highGridY: '..self.highlightedTile.gridY)
+                    newTile.gridX = tempX                       -- 1
+                    newTile.gridY = tempY                       -- 2
+                    print('newTileGridX: '.. newTile.gridX..' newTileGridY: '..newTile.gridY)
+                    -- swap tiles in the tiles table
+                    self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
+                        self.highlightedTile                   -- 1, 1, 000, 000
+                    print('board.tiles['.. self.highlightedTile.gridY..']['..self.highlightedTile.gridX..'] = y:'..self.highlightedTile.gridY..' x: '..self.highlightedTile.gridX..' posX: '..self.highlightedTile.x..' posY: '..self.highlightedTile.y)
+                    self.board.tiles[newTile.gridY][newTile.gridX] = newTile    -- 2, 1, 000, 032
+                    print('board.tiles['.. newTile.gridY..']['..newTile.gridX..'] = y:'..newTile.gridY..' x: '..newTile.gridX..' posX: '..newTile.x..' posY: '..newTile.y)
+
+                    gSounds['error']:play()
+                    self.highlightedTile = nil
+                end
             end
         end
     end
