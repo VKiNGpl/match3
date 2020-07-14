@@ -64,6 +64,7 @@ function Board:calculateMatches()
 
         -- every horizontal tile
         for x = 2, 8 do
+
             -- if this is the same color as the one we're trying to match...
             if self.tiles[y][x].color == colorToMatch then
                 matchNum = matchNum + 1
@@ -83,7 +84,7 @@ function Board:calculateMatches()
                         
                         -- add each tile to the match that's in that match
                         table.insert(match, self.tiles[y][x2])
-                        --print('inserting variety type: '  .. self.tiles[y][x2].variety .. ' at y=' .. y .. ' x=' .. x2)
+                        --print('tile shiny: '  .. tostring(self.tiles[y][x2].isShiny) .. ' at y=' .. y .. ' x=' .. x2)
                         if isMatched and self.tiles[y][x2].variety == varietyToMatch then
                             isMatched = true
                         else
@@ -122,7 +123,7 @@ function Board:calculateMatches()
             -- go backwards from end of last row by matchNum
             for x = 8, 8 - matchNum + 1, -1 do
                 table.insert(match, self.tiles[y][x])
-                --print('inserting variety type: '  .. self.tiles[y][x].variety  .. ' at y=' .. y .. ' x=' .. x)
+                --print('tile shiny: '  .. tostring(self.tiles[y][x].isShiny)  .. ' at y=' .. y .. ' x=' .. x)
                 if isMatched and self.tiles[y][x].variety == varietyToMatch then
                     isMatched = true
                 else
@@ -170,7 +171,7 @@ function Board:calculateMatches()
 
                         -- add each tile to the match that's in that match
                         table.insert(match, self.tiles[y2][x])
-                        --print('inserting variety type: ' ..  self.tiles[y2][x].variety .. ' at x=' .. x .. ' y=' .. y2)
+                        --print('tile shiny: '  .. tostring(self.tiles[y2][x].isShiny) .. ' at x=' .. x .. ' y=' .. y2)
                         if isMatched and self.tiles[y2][x].variety == varietyToMatch then
                             isMatched = true
                         else
@@ -209,7 +210,7 @@ function Board:calculateMatches()
             -- go backwards from end of last row by matchNum
             for y = 8, 8 - matchNum + 1, -1 do
                 table.insert(match, self.tiles[y][x])
-                --print('inserting variety type: '  .. self.tiles[y][x].variety  .. ' at x=' .. x .. ' y=' .. y)
+                --print('tile shiny: '  .. tostring(self.tiles[y][x].isShiny)  .. ' at x=' .. x .. ' y=' .. y)
                 if isMatched and self.tiles[y][x].variety == varietyToMatch then
                     isMatched = true
                 else
@@ -336,6 +337,21 @@ function Board:render()
     for y = 1, #self.tiles do
         for x = 1, #self.tiles[1] do
             self.tiles[y][x]:render(self.x, self.y)
+            if self.tiles[y][x].isShiny then
+                self.tiles[y][x]:renderParticles()
+                self.tiles[y][x]:emitParticles()
+            end
+        end
+    end
+end
+
+function Board:update(dt)
+    -- update all particles systems for all shiny tiles
+    for y = 1, #self.tiles do
+        for x = 1, #self.tiles do
+            if self.tiles[y][x].isShiny then
+                self.tiles[y][x]:update(dt)
+            end
         end
     end
 end

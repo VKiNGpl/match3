@@ -71,6 +71,7 @@ function PlayState:enter(params)
 end
 
 function PlayState:update(dt)
+
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
@@ -173,6 +174,8 @@ function PlayState:update(dt)
             end
         end
     end
+
+    self.board:update(dt)
 
     Timer.update(dt)
 end
