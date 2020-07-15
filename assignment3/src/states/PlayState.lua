@@ -73,7 +73,6 @@ function PlayState:enter(params)
 end
 
 function PlayState:update(dt)
-
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end
@@ -109,6 +108,14 @@ function PlayState:update(dt)
     end
 
     if self.canInput then
+        if love.mouse.isDown(1) then
+            local x = mouseX - 256
+            local y = mouseY - 32
+            if self.board.tiles[1][1].x <= x and self.board.tiles[1][1].y <= y then
+                self.highlightedTile = self.board.tiles[1][1]
+            end
+        end
+
         -- move cursor around based on bounds of grid, playing sounds
         if love.keyboard.wasPressed('up') then
             self.boardHighlightY = math.max(0, self.boardHighlightY - 1)

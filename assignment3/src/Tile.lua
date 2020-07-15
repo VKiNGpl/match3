@@ -46,7 +46,6 @@ function Tile:render(x, y)
     love.graphics.setColor(0.13, 0.13, 0.2, 1.0)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x + 2, self.y + y + 2)
-    -- print_r (gFrames)            -- print table of gFrames in debug console
     -- draw tile itself
     love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
