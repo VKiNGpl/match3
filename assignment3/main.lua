@@ -80,6 +80,8 @@ function love.load()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
+
+    cursor = love.mouse.getSystemCursor("hand")
 end
 
 function love.resize(w, h)
@@ -123,4 +125,12 @@ function love.draw()
     
     gStateMachine:render()
     push:finish()
+end
+
+function love.mousepressed(x, y, button)
+    
+    if button == 1 then
+        print('x: '.. x .. ' y: '.. y)
+        print('to game: '.. push:toGame(x, y))
+    end
 end
