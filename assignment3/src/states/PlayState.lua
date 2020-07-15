@@ -37,7 +37,8 @@ function PlayState:init()
     self.highlightedTile = nil
 
     self.score = 0
-    self.timer = 600
+    self.timer = 60
+    self.matchesLeft = 0
 
     -- set our Timer class to turn cursor highlight on and off
     Timer.every(0.5, function()
@@ -62,6 +63,7 @@ function PlayState:enter(params)
 
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
+    self:calculateMatches()
 
     -- grab score from params if it was passed
     self.score = params.score or 0
@@ -145,22 +147,22 @@ function PlayState:update(dt)
             else
                 
                 -- swap grid positions of tiles
-                local tempX = self.highlightedTile.gridX    -- 1
-                local tempY = self.highlightedTile.gridY    -- 1
+                local tempX = self.highlightedTile.gridX
+                local tempY = self.highlightedTile.gridY
                 
-                local newTile = self.board.tiles[y][x]      -- 1, 2, x000, y032
+                local newTile = self.board.tiles[y][x]
                 
-                self.highlightedTile.gridX = newTile.gridX  -- 1
-                self.highlightedTile.gridY = newTile.gridY  -- 2
-                
-                newTile.gridX = tempX                       -- 1
-                newTile.gridY = tempY                       -- 1
+                self.highlightedTile.gridX = newTile.gridX
+                self.highlightedTile.gridY = newTile.gridY
+            
+                newTile.gridX = tempX
+                newTile.gridY = tempY
                 
                 -- swap tiles in the tiles table
                 self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                    self.highlightedTile                   -- 1, 2, 000, 000 / 1, 2
+                    self.highlightedTile
     
-                self.board.tiles[newTile.gridY][newTile.gridX] = newTile    -- 1, 1, 000, 032
+                self.board.tiles[newTile.gridY][newTile.gridX] = newTile
 
                 if self.board:calculateMatches() then
                     -- tween coordinates between the two so they swap
@@ -174,32 +176,29 @@ function PlayState:update(dt)
                         self:calculateMatches()
                     end)
                 else                
-                    tempX = self.highlightedTile.gridX    -- 1
-                    tempY = self.highlightedTile.gridY    -- 2
-                    print('tempX: '.. tempX..' tempY: '..tempY)
+                    tempX = self.highlightedTile.gridX
+                    tempY = self.highlightedTile.gridY
                     
-                    self.highlightedTile.gridX = newTile.gridX  -- 1
-                    self.highlightedTile.gridY = newTile.gridY  -- 1
-                    print('highGridX '.. self.highlightedTile.gridX..' highGridY: '..self.highlightedTile.gridY)
-                    newTile.gridX = tempX                       -- 1
-                    newTile.gridY = tempY                       -- 2
-                    print('newTileGridX: '.. newTile.gridX..' newTileGridY: '..newTile.gridY)
+                    self.highlightedTile.gridX = newTile.gridX
+                    self.highlightedTile.gridY = newTile.gridY
+
+                    newTile.gridX = tempX
+                    newTile.gridY = tempY
+
                     -- swap tiles in the tiles table
                     self.board.tiles[self.highlightedTile.gridY][self.highlightedTile.gridX] =
-                        self.highlightedTile                   -- 1, 1, 000, 000
-                    print('board.tiles['.. self.highlightedTile.gridY..']['..self.highlightedTile.gridX..'] = y:'..self.highlightedTile.gridY..' x: '..self.highlightedTile.gridX..' posX: '..self.highlightedTile.x..' posY: '..self.highlightedTile.y)
-                    self.board.tiles[newTile.gridY][newTile.gridX] = newTile    -- 2, 1, 000, 032
-                    print('board.tiles['.. newTile.gridY..']['..newTile.gridX..'] = y:'..newTile.gridY..' x: '..newTile.gridX..' posX: '..newTile.x..' posY: '..newTile.y)
-
+                        self.highlightedTile
+                    self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+                    
                     gSounds['error']:play()
                     self.highlightedTile = nil
                 end
             end
         end
     end
-
+    
     self.board:update(dt)
-
+    
     Timer.update(dt)
 end
 
@@ -239,11 +238,16 @@ function PlayState:calculateMatches()
             -- as a result of falling blocks once new blocks have finished falling
             self:calculateMatches()
         end)
-    
+
     -- if no matches, we can continue playing
     else
+        if self:noPossibleMatches() then
+            self.board:initializeTiles(self.level)
+            self:noPossibleMatches()
+        end
         self.canInput = true
     end
+    
 end
 
 function PlayState:render()
@@ -278,7 +282,7 @@ function PlayState:render()
 
     -- GUI text
     love.graphics.setColor(0.22, 0.22, 0.22, 0.918)
-    love.graphics.rectangle('fill', 16, 16, 186, 116, 4)
+    love.graphics.rectangle('fill', 16, 16, 186, 145, 4)
 
     love.graphics.setColor(0.388, 0.608, 1.0, 1.0)
     love.graphics.setFont(gFonts['medium'])
@@ -286,4 +290,87 @@ function PlayState:render()
     love.graphics.printf('Score: ' .. tostring(self.score), 20, 52, 182, 'center')
     love.graphics.printf('Goal : ' .. tostring(self.scoreGoal), 20, 80, 182, 'center')
     love.graphics.printf('Timer: ' .. tostring(self.timer), 20, 108, 182, 'center')
+    love.graphics.printf('Moves left: ' .. tostring(self.matchesLeft), 20, 136, 182, 'center')
+end
+
+function PlayState:noPossibleMatches()
+    local matches = 0
+    local centerTile
+    local adjacentTile
+    local tempX
+    local tempY
+    local newTile
+
+    for y = 1, 8 do
+        for x = 1, 8 do
+            centerTile = self.board.tiles[y][x]
+
+            if x == 8 then
+                goto continueX
+            end
+            adjacentTile = self.board.tiles[y][x+1]
+
+            tempX = centerTile.gridX
+            tempY = centerTile.gridY
+            newTile = adjacentTile
+            centerTile.gridX = newTile.gridX
+            centerTile.gridY = newTile.gridY
+            newTile.gridX = tempX
+            newTile.gridY = tempY
+            self.board.tiles[centerTile.gridY][centerTile.gridX] = centerTile
+            self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+            if self.board:calculateMatches() then
+                matches = matches + 1
+            end  
+        
+            tempX = centerTile.gridX
+            tempY = centerTile.gridY
+            centerTile.gridX = newTile.gridX
+            centerTile.gridY = newTile.gridY
+            newTile.gridX = tempX
+            newTile.gridY = tempY
+            self.board.tiles[centerTile.gridY][centerTile.gridX] = centerTile
+            self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+            ::continueX::
+            if y == 8 then
+                goto continueY
+            end
+            adjacentTile = self.board.tiles[y+1][x]
+
+            tempX = centerTile.gridX
+            tempY = centerTile.gridY
+            newTile = adjacentTile
+            centerTile.gridX = newTile.gridX
+            centerTile.gridY = newTile.gridY
+            newTile.gridX = tempX
+            newTile.gridY = tempY
+            self.board.tiles[centerTile.gridY][centerTile.gridX] = centerTile
+            self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+            if self.board:calculateMatches() then
+                matches = matches + 1
+            end  
+        
+            tempX = centerTile.gridX
+            tempY = centerTile.gridY
+            centerTile.gridX = newTile.gridX
+            centerTile.gridY = newTile.gridY
+            newTile.gridX = tempX
+            newTile.gridY = tempY
+            self.board.tiles[centerTile.gridY][centerTile.gridX] = centerTile
+            self.board.tiles[newTile.gridY][newTile.gridX] = newTile
+
+            ::continueY::
+        end
+    end
+    if matches < 30 then
+        self.matchesLeft = matches
+    end
+    if matches > 0 then
+        return false
+    else
+        return true
+    end
 end

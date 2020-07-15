@@ -23,7 +23,7 @@ function BeginGameState:init(level)
     self.transitionAlpha = 1.0
 
     -- spawn a board and place it toward the right
-    self.board = Board(VIRTUAL_WIDTH - 272, 16, currentLevel) -- pass in initial game level here
+    self.board = Board(VIRTUAL_WIDTH - 272, 16, currentLevel)
 
     -- start our level # label off-screen
     self.levelLabelY = -64

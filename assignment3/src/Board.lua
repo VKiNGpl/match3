@@ -38,7 +38,6 @@ function Board:initializeTiles(level)
     end
 
     while self:calculateMatches() do
-        --print('initiated with matching tiles')
         -- recursively initialize if matches were returned so we always have
         -- a matchless board on start
         self:initializeTiles(math.min(level, 6))
@@ -96,15 +95,10 @@ function Board:calculateMatches()
                         end
                     end
                     if isMatched then
-                        --print('variety: ' .. varietyToMatch .. ' matched!')
                         for i=1, varietyToMatch - 1 do
                             table.insert(match, self.tiles[y][x-1])
                         end
-                    else
-                        --print('variety not a match...')
                     end
-                    --table.foreachi(match, print)
-
                     -- add this match to our total matches table
                     table.insert(matches, match)
                 end
@@ -139,15 +133,10 @@ function Board:calculateMatches()
                 end
             end
             if isMatched then
-                --print('variety: ' .. varietyToMatch .. ' matched!')
                 for i=1, varietyToMatch - 1 do
                     table.insert(match, self.tiles[y][8])
                 end
-            else
-                --print('variety not a match...')
             end
-            --table.foreachi(match, print)
-
             -- add this match to our total matches table
             table.insert(matches, match)
         end
@@ -191,15 +180,10 @@ function Board:calculateMatches()
                         end
                     end
                     if isMatched then
-                        --print('variety: ' .. varietyToMatch .. ' matched!')
                         for i=1, varietyToMatch - 1 do
                             table.insert(match, self.tiles[y-1][x])
                         end
-                    else
-                        --print('variety not a match...')
                     end
-                    --table.foreachi(match, print)
-
                     -- add this match to our total matches table
                     table.insert(matches, match)
                 end
@@ -234,15 +218,10 @@ function Board:calculateMatches()
                 end
             end
             if isMatched then
-                --print('variety: ' .. varietyToMatch .. ' matched!')
                 for i=1, varietyToMatch - 1 do
                     table.insert(match, self.tiles[8][x])
                 end
-            else
-                --print('variety not a match...')
             end
-            --table.foreachi(match, print)
-
             -- add this match to our total matches table
             table.insert(matches, match)
         end
