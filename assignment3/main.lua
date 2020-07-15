@@ -44,6 +44,8 @@ VIRTUAL_HEIGHT = 288
 -- speed at which our background texture will scroll
 BACKGROUND_SCROLL_SPEED = 80
 
+MOUSE_INPUT = true
+
 startLevel = 1
 
 function love.load()
@@ -80,6 +82,7 @@ function love.load()
 
     -- initialize input table
     love.keyboard.keysPressed = {}
+    mouseOnePressed = false
 end
 
 function love.resize(w, h)
@@ -128,6 +131,6 @@ end
 function love.mousepressed(x, y, button)
     if button == 1 and push:toGame(x, y) then
         mouseX, mouseY = push:toGame(x, y)
-        print(push:toGame(x, y))
+        mouseOnePressed = true
     end
 end

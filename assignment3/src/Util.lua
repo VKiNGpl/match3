@@ -21,10 +21,15 @@ function GenerateTileQuads(atlas)
     local x = 0
     local y = 0
 
+    local rows = 5
+    local tileWidth, tileHeight = 32, 32
+    local gapBetweenRows = 2 * tileHeight
+    local gapBetweenColumns = 1 * tileWidth
+    
     local counter = 1
-
-    -- 9 rows of tiles
-    for row = 1, 5 do       -- to 9 in original distro
+    
+    -- up to 9 rows of tiles (set to variable rows)
+    for row = 1, rows do
         
         -- two sets of 6 cols, different tile varietes
         for i = 1, 2 do
@@ -32,14 +37,14 @@ function GenerateTileQuads(atlas)
             
             for col = 1, 6 do
                 table.insert(tiles[counter], love.graphics.newQuad(
-                    x, y, 32, 32, atlas:getDimensions()
+                    x, y, tileWidth, tileHeight, atlas:getDimensions()
                 ))
-                x = x + 32
+                x = x + gapBetweenColumns
             end
 
             counter = counter + 1
         end
-        y = y + 64      -- +32 in original distro
+        y = y + gapBetweenRows      -- +64 for 5 rows
         x = 0
     end
 
